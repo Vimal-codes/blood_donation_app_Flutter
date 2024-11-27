@@ -1,14 +1,14 @@
 import 'package:blood_donation_app_flutter/dbhelper.dart';
-import 'package:blood_donation_app_flutter/home_screens/donatorListFuture.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../util/user.dart';
 import '../onboarding/login.dart';
 import 'Tips.dart';
+import 'donatorListFuture.dart';
 import 'registration.dart';
-import '../user.dart';
 
 
 

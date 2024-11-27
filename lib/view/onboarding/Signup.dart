@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../service/apiService.dart';
+import 'login.dart';
+
 class SignUp extends StatefulWidget {
   SignUp({super.key});
 
@@ -9,32 +12,37 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  TextEditingController username = TextEditingController();
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController confirmPassword = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController placeController = TextEditingController();
+  TextEditingController pincodeController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   int _value = 1;
-  final _formKey = GlobalKey<FormState>();
-  bool passwordvisible = true;
+
+  final GlobalKey<FormState> formkey = GlobalKey<FormState>();
+  ApiService apiService = ApiService();
+  bool passwordVisible = true;
 
   void toggle() {
     setState(() {
-      passwordvisible = !passwordvisible;
+      passwordVisible = !passwordVisible;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        top: true,
-        bottom: true,
-        right: true,
-        left: true,
-        child: Scaffold(
-          body: Container(
+      top: true,
+      bottom: true,
+      right: true,
+      left: true,
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Container(
             color: Color(0xFFF5F5F5),
             child: Form(
-              key: _formKey,
+              key: formkey,
               child: Column(
                 children: [
                   SizedBox(height: 50),
@@ -65,11 +73,11 @@ class _SignUpState extends State<SignUp> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                     child: TextFormField(
-                      controller: username,
+                      controller: nameController,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.person),
-                        hintText: "Username",
-                        labelText: "Username",
+                        hintText: "Name",
+                        labelText: "Name",
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.0),
                           borderSide: BorderSide(color: Color(0xFFC5141A).withOpacity(0.1)),
@@ -93,7 +101,93 @@ class _SignUpState extends State<SignUp> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                     child: TextFormField(
-                      controller: email,
+                      controller: phoneController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.phone),
+                        hintText: "Phone",
+                        labelText: "Phone",
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide(color: Color(0xFFC5141A).withOpacity(0.1)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        fillColor: Color(0xFFC5141A).withOpacity(0.05),
+                        filled: true,
+                      ),
+                      validator: (v) {
+                        if (v!.isEmpty) {
+                          return "Must fill phone number";
+                        } else if (v.length < 10) {
+                          return "Enter a valid phone number";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                    child: TextFormField(
+                      controller: placeController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.location_on),
+                        hintText: "Place",
+                        labelText: "Place",
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide(color: Color(0xFFC5141A).withOpacity(0.1)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        fillColor: Color(0xFFC5141A).withOpacity(0.05),
+                        filled: true,
+                      ),
+                      validator: (v) {
+                        if (v!.isEmpty) {
+                          return "Must fill place";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                    child: TextFormField(
+                      controller: pincodeController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.location_city),
+                        hintText: "Pincode",
+                        labelText: "Pincode",
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide(color: Color(0xFFC5141A).withOpacity(0.1)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        fillColor: Color(0xFFC5141A).withOpacity(0.05),
+                        filled: true,
+                      ),
+                      validator: (v) {
+                        if (v!.isEmpty) {
+                          return "Must fill pincode";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                    child: TextFormField(
+                      controller: emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.email),
@@ -120,77 +214,18 @@ class _SignUpState extends State<SignUp> {
                   ),
                   SizedBox(height: 8),
                   Padding(
-                    padding: const EdgeInsets.only(left: 25),
-                    child: Row(
-                      children: [
-                        Text(
-                          "Gender:",
-                          style: TextStyle(fontSize: 16, fontFamily: 'Poppins'),
-                        ),
-                        SizedBox(width: 10),
-                        Radio(
-                          value: 1,
-                          groupValue: _value,
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                _value = value;
-                              });
-                            }
-                          },
-                        ),
-                        Text("Male", style: TextStyle(fontFamily: 'Poppins')),
-                        Radio(
-                          value: 2,
-                          groupValue: _value,
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                _value = value;
-                              });
-                            }
-                          },
-                        ),
-                        Text("Female", style: TextStyle(fontFamily: 'Poppins')),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 6),
-                  Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                     child: TextFormField(
-                      controller: password,
-                      obscureText: passwordvisible,
+                      controller: passwordController,
+                      obscureText: passwordVisible,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock),
                         hintText: "Password",
                         labelText: "Password",
                         suffixIcon: IconButton(
                           onPressed: toggle,
-                          icon: Icon(passwordvisible ? Icons.visibility_off : Icons.visibility),
+                          icon: Icon(passwordVisible ? Icons.visibility_off : Icons.visibility),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(color: Color(0xFFC5141A).withOpacity(0.1)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        fillColor: Color(0xFFC5141A).withOpacity(0.05),
-                        filled: true,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
-                    child: TextFormField(
-                      controller: confirmPassword,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock),
-                        hintText: "Confirm Password",
-                        labelText: "Confirm Password",
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.0),
                           borderSide: BorderSide(color: Color(0xFFC5141A).withOpacity(0.1)),
@@ -206,10 +241,23 @@ class _SignUpState extends State<SignUp> {
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Handle successful form submission
+                    onPressed: () async {
+                      if(formkey.currentState!.validate()){
+                        apiService.registration(
+                            nameController.text,
+                            int.parse(phoneController.text),
+                            placeController.text,
+                            int.parse(pincodeController.text),
+                            emailController.text,
+                            passwordController.text
+                        );
                       }
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (BuildContext context) {
+                          return const LoginPage();
+                        }),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFC5141A),
@@ -233,6 +281,8 @@ class _SignUpState extends State<SignUp> {
               ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

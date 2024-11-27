@@ -1,7 +1,7 @@
-import 'package:blood_donation_app_flutter/user.dart';
+import 'package:blood_donation_app_flutter/util/user.dart';
 import 'package:flutter/material.dart';
-import '../dbhelper.dart';
 
+import '../../dbhelper.dart';
 class Registration extends StatefulWidget {
   final VoidCallback? onRegistered; // Add this callback parameter
 

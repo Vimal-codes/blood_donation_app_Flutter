@@ -1,4 +1,4 @@
-import 'package:blood_donation_app_flutter/user.dart';
+import 'package:blood_donation_app_flutter/util/user.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

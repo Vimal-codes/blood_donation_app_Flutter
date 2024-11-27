@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../dbhelper.dart';
-import '../user.dart';
+import '../../dbhelper.dart';
+import '../../util/user.dart';
 import 'HomePage.dart';
 
 class DonorListPage extends StatefulWidget {

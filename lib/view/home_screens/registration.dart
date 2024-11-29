@@ -1,7 +1,7 @@
 import 'package:blood_donation_app_flutter/util/user.dart';
 import 'package:flutter/material.dart';
 
-import '../../dbhelper.dart';
+import '../../service/dbhelper.dart';
 class Registration extends StatefulWidget {
   final VoidCallback? onRegistered; // Add this callback parameter
 
@@ -226,6 +226,7 @@ class _RegistrationState extends State<Registration> {
                 width: 400,
                 child: TextFormField(
                   controller: lastDonatedController,
+                  readOnly: true, // Makes the field non-editable, so users must use the date picker
                   decoration: InputDecoration(
                     labelText: 'Last Donation Date (YYYY-MM-DD)',
                     border: OutlineInputBorder(
@@ -245,7 +246,40 @@ class _RegistrationState extends State<Registration> {
                       borderSide: BorderSide(color: Color(0xFFC5141A), width: 2.0),
                     ),
                   ),
-                  keyboardType: TextInputType.datetime,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1900), // Earliest selectable date
+                      lastDate: DateTime.now(), // Latest selectable date
+                      builder: (context, child) {
+                        return Theme(
+                          data: Theme.of(context).copyWith(
+                            colorScheme: ColorScheme.light(
+                              primary: Color(0xFFC5141A), // Header background color
+                              onPrimary: Colors.white, // Header text color
+                              onSurface: Colors.black, // Body text color
+                            ),
+                            textButtonTheme: TextButtonThemeData(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Color(0xFFC5141A), // Button text color
+                              ),
+                            ),
+                          ),
+                          child: child!,
+                        );
+                      },
+                    );
+
+                    if (pickedDate != null) {
+                      // Format the date as YYYY-MM-DD
+                      String formattedDate = "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+
+                      setState(() {
+                        lastDonatedController.text = formattedDate; // Set the selected date
+                      });
+                    }
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the last donation date';
@@ -257,6 +291,7 @@ class _RegistrationState extends State<Registration> {
                   },
                 ),
               ),
+
               const SizedBox(height: 20.0),
 
               Row(

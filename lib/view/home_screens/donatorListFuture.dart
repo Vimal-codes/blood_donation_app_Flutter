@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../dbhelper.dart';
+import '../../service/dbhelper.dart';
 import '../../util/user.dart';
-import 'HomePage.dart';
 
 class DonorListPage extends StatefulWidget {
   @override
@@ -31,26 +29,19 @@ class _DonorListPageState extends State<DonorListPage> {
     });
   }
 
-  int _selectedIndex = 1; // Initialize selected index
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFFEFEFF),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFBB2727),
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          'Donor List',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: const Color(0xFFBB2727),
+      //   iconTheme: const IconThemeData(color: Colors.white),
+      //   title: const Text(
+      //     'Donor List',
+      //     style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+      //   ),
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -60,46 +51,6 @@ class _DonorListPageState extends State<DonorListPage> {
             Expanded(child: _donorList()),
           ],
         ),
-      ),
-      bottomNavigationBar: SalomonBottomBar(
-        currentIndex: _selectedIndex, // Manage the selected index
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-
-          if (index == 0) {
-            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-              return HomeScreen();
-            }));
-          } else if (index == 1) {
-            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-              return DonorListPage();
-            }));
-          }
-        },
-        items: [
-          SalomonBottomBarItem(
-            icon: Icon(Icons.home),
-            title: Text("Home"),
-            selectedColor: Color(0xFFC5141A),
-          ),
-          SalomonBottomBarItem(
-            icon: Icon(Icons.search),
-            title: Text("Search"),
-            selectedColor: Color(0xFFC5141A),
-          ),
-          SalomonBottomBarItem(
-            icon: Icon(Icons.notifications_none),
-            title: Text("Alert"),
-            selectedColor: Color(0xFFC5141A),
-          ),
-          SalomonBottomBarItem(
-            icon: Icon(Icons.person),
-            title: Text("Profile"),
-            selectedColor: Color(0xFFC5141A),
-          ),
-        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:blood_donation_app_flutter/service/SharedPref.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/login/GetLoginData.dart';
@@ -33,7 +34,7 @@ class ApiService{
     }
   }
 
-  Future<void> registration(String name, int phone, String place, int pincode, String email, String password) async {
+  Future<bool> registration(String name, int phone, String place, int pincode, String email, String password) async {
     var url = Uri.parse("$baseUrl/registration/");
 
     var header = {
@@ -41,25 +42,32 @@ class ApiService{
       'Content-Type': 'application/json'
     };
 
-    var body = jsonEncode(
-      {
-        "name": name,
-        "phone": phone,
-        "place": place,
-        "pincode": pincode,
-        "email": email,
-        "password": password
-      }
-    );
+    var body = jsonEncode({
+      "name": name,
+      "phone": phone,
+      "place": place,
+      "pincode": pincode,
+      "email": email,
+      "password": password
+    });
 
-    try{
+    try {
       final response = await http.post(url, headers: header, body: body);
-      if(response.statusCode >= 200 && response.statusCode <= 299){
-        var responseData = jsonDecode(response.body);
-        print("Registration successful: $responseData");
+
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        print("Registration successful: ${response.body}");
+        return true; // Registration was successful
+      } else {
+        // Handle non-200 responses
+        print("Registration failed with status: ${response.statusCode}");
+        print("Response body: ${response.body}");
+        return false; // Registration failed
       }
-    }catch(e){
-      print("$e");
+    } catch (e) {
+      // Log exception
+      print("Registration error: $e");
+      return false; // Registration failed due to an exception
     }
   }
+
 }

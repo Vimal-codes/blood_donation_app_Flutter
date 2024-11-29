@@ -1,11 +1,15 @@
-import 'package:blood_donation_app_flutter/dbhelper.dart';
+import 'package:blood_donation_app_flutter/service/dbhelper.dart';
+import 'package:blood_donation_app_flutter/view/home_screens/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../model/login/GetLoginData.dart';
+import '../../service/SharedPref.dart';
 import '../../util/user.dart';
 import '../onboarding/login.dart';
+import 'Alertpage.dart';
 import 'Tips.dart';
 import 'donatorListFuture.dart';
 import 'registration.dart';
@@ -20,6 +24,75 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  int _selectedIndex = 0;
+
+  List<Widget>pages = [
+    HomeWidget(),
+    DonorListPage(),
+    Alertpage(),
+    ProfilePage()
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;  // Update the selected index
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Color(0xFFFEFEFF),
+        body: pages[_selectedIndex],
+        bottomNavigationBar: SalomonBottomBar(
+          currentIndex: _selectedIndex, // Manage the selected index
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+          items: [
+            SalomonBottomBarItem(
+              icon: Icon(Icons.home),
+              title: Text("Home"),
+              selectedColor: Color(0xFFC5141A),
+            ),
+
+            SalomonBottomBarItem(
+              icon: Icon(Icons.search),
+              title: Text("Search"),
+              selectedColor: Color(0xFFC5141A),
+            ),
+
+            SalomonBottomBarItem(
+              icon: Icon(Icons.notifications_none), // Change icon as needed
+              title: Text("Alert"), // Change title if needed
+              selectedColor: Color(0xFFC5141A),
+            ),
+
+            SalomonBottomBarItem(
+              icon: Icon(Icons.person),
+              title: Text("Profile"),
+              selectedColor: Color(0xFFC5141A),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HomeWidget extends StatefulWidget {
+  const HomeWidget({super.key});
+
+  @override
+  State<HomeWidget> createState() => _HomeWidgetState();
+}
+
+class _HomeWidgetState extends State<HomeWidget> {
+
   DatabaseHelper databaseHelper = DatabaseHelper();
 
   final List<String> imgList = [
@@ -28,12 +101,25 @@ class _HomeScreenState extends State<HomeScreen> {
     'assets/images/poster3.png',
   ];
 
-  int _selectedIndex = 0; // Initialize selected index
+  String? userName;
+  String? userLocation;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferenceHelper sharedPrefs = SharedPreferenceHelper();
+    GetLoginData? loginData = await sharedPrefs.getLoginData();
+
+    if (loginData != null) {
+      setState(() {
+        userName = loginData.name; // Assuming 'name' is a field in GetLoginData
+        userLocation = loginData.place; // Assuming 'place' is a field in GetLoginData
+      });
+    }
   }
 
   @override
@@ -75,21 +161,21 @@ class _HomeScreenState extends State<HomeScreen> {
           toolbarHeight: 68,
           title: Padding(
             padding: const EdgeInsets.only(left: 2),
-            child: const Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Hello User",
-                  style: TextStyle(
+                  userName != null ? "Hello $userName!" : "Hello!",
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Poppins', // Apply the Poppins font family
                   ),
                 ),
                 Text(
-                  "Location",
-                  style: TextStyle(
+                  userLocation ?? "Location",
+                  style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Poppins', // Apply the Poppins font family
@@ -176,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         ),
-                      child: Stack(
+                        child: Stack(
                           children: [
                             Positioned(
                               top: 5,
@@ -365,69 +451,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: SalomonBottomBar(
-          currentIndex: _selectedIndex, // Manage the selected index
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-
-            if (index == 0) {
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-                return HomeScreen();
-              }));
-            }
-
-            else if (index == 1) {
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-                return DonorListPage();
-              }));
-            }
-
-            // else if (index == 2) {
-            //   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-            //     // return DonorListPage();
-            //   }));
-            // }
-            //
-            // else if (index == 3) {
-            //   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-            //     // return DonorListPage();
-            //   }));
-            // }
-
-          },
-          items: [
-            SalomonBottomBarItem(
-              icon: Icon(Icons.home),
-              title: Text("Home"),
-              selectedColor: Color(0xFFC5141A),
-            ),
-
-            SalomonBottomBarItem(
-              icon: Icon(Icons.search),
-              title: Text("Search"),
-              selectedColor: Color(0xFFC5141A),
-            ),
-
-            SalomonBottomBarItem(
-              icon: Icon(Icons.notifications_none), // Change icon as needed
-              title: Text("Alert"), // Change title if needed
-              selectedColor: Color(0xFFC5141A),
-            ),
-
-            SalomonBottomBarItem(
-              icon: Icon(Icons.person),
-              title: Text("Profile"),
-              selectedColor: Color(0xFFC5141A),
-            ),
-          ],
-        ),
 
       ),
     );
   }
-
   Widget _myList() {
     return FutureBuilder<List<User>?>(
       future: databaseHelper.getAllUsers(),
@@ -501,7 +528,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-
   void _callPhone(String number) async {
     final Uri callUri = Uri.parse("tel:$number");
     if (await canLaunchUrl(callUri)) {
